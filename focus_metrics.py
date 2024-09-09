@@ -1,7 +1,6 @@
 import numpy as np
 from numba import jit
 
-
 # ------------------------------------------------------
 # Differential image quality metrics
 # adapted from Royer et al. 2016, Nat Biotech, doi:10.1038/nbt.3708
@@ -18,7 +17,7 @@ def brenner(data):
     brenner = 0.0
     for y in range(1, data.shape[0] - 1): # skip first and last pixel in y
         for x in range(1, data.shape[1] - 1): # skip first and last pixel in x
-            brenner += (data[y-1][x] - data[y+1][x])**2
+            brenner += pow(data[y-1, x] - data[y+1, x], 2)
     
     return np.float32(brenner / n_px_slice)
 
@@ -52,7 +51,7 @@ def squared_laplacian(data):
     squared_laplacian = 0.0
     for y in range(1, data.shape[0] - 1):  # skip first and last pixel in y
         for x in range(1, data.shape[1] - 1):  # skip first and last pixel in x
-            squared_laplacian += (8 * data[y][x] - data[y][x-1] - data[y][x+1] - data[y-1][x] - data[y+1][x] - data[y-1][x-1] - data[y+1][x+1] - data[y-1][x+1] - data[y+1][x-1])**2
+            squared_laplacian += pow(8 * data[y][x] - data[y][x-1] - data[y][x+1] - data[y-1][x] - data[y+1][x] - data[y-1][x-1] - data[y+1][x+1] - data[y-1][x+1] - data[y+1][x-1], 2)
 
     return np.float32(squared_laplacian / n_px_slice)
 
@@ -69,7 +68,7 @@ def total_variation(data):
     tv = 0.0
     for y in range(1, data.shape[0] - 1): # skip first and last pixel in y
         for x in range(1, data.shape[1] - 1): # skip first and last pixel in x
-            tv += np.sqrt((data[y][x + 1] - data[y][x - 1])**2 + (data[y + 1][x] - data[y - 1][x])**2)
+            tv += np.sqrt(pow(data[y][x + 1] - data[y][x - 1], 2) + pow(data[y + 1][x] - data[y - 1][x], 2))
 
     return np.float32(tv / n_px_slice)
 
@@ -88,7 +87,7 @@ def block_total_variation(data, block_size=8):
         for x in range((block_size/2), data.shape[1] - (block_size/2)): # skip first and last pixels equivalent to half the block size in x
             for y_block in range(y-(block_size/2), y+(block_size/2)):
                 for x_block in range(x-(block_size/2), x+(block_size/2)):
-                    block_tv += np.sqrt((data[y][x] - data[y_block][x_block])**2)
+                    block_tv += np.sqrt(pow(data[y][x] - data[y_block][x_block], 2))
 
     return np.float32(block_tv / n_px_slice)
 
@@ -107,7 +106,7 @@ def tenengrad(data):
         for x in range(1, data.shape[1] - 1):  # skip first and last pixel in x
             sobel_h = data[y-1][x+1] + 2 * data[y][x+1] + data[y+1][x+1] - data[y-1][x-1] - 2 * data[y][x-1] - data[y+1][x-1]
             sobel_v = data[y+1][x-1] + 2 * data[y+1][x] + data[y+1][x+1] - data[y-1][x-1] - 2 * data[y-1][x] - data[y-1][x+1]
-            tenengrad += sobel_h**2 + sobel_v**2
+            tenengrad += pow(sobel_h, 2) + pow(sobel_v, 2)
 
     return np.float32(tenengrad / n_px_slice)
 
@@ -147,7 +146,7 @@ def vollath_f5(data):
         for x in range(1, data.shape[1] - 1): # skip first and last pixel in x
             vollath_f5 += data[y][x] * data[y][x+1]
     
-    sum = np.sum(data)**2 / n_px_slice
+    sum = pow(np.sum(data), 2) / n_px_slice
     vollath_f5 -= sum
 
     return np.float32(vollath_f5 / n_px_slice)
