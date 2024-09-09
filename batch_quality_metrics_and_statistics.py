@@ -9,7 +9,7 @@ import bioio_czi
 from datetime import datetime
 from tqdm import tqdm
 
-folder_path = '/mnt/Data/nuno_martins/image_data/NPM_Ex003_Re07/'
+folder_path = '/mnt/Data/nuno_martins/Image_data/NPM_Ex003_Re07/'
 file_extension = '.czi'
 
 def main(path, extension):
