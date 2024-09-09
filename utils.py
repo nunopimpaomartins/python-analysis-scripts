@@ -1,6 +1,10 @@
 import numpy as np
 # from numba import jit
 
+# IO functions
+
+
+# Normlaization functions
 def normalize_min_max(data, new_min=0.0, new_max=1.0):
     """
     Normalize data to the range [new_min, new_max]
