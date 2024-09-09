@@ -3,6 +3,7 @@ from numba import jit
 
 # ------------------------------------------------------
 # Differential image quality metrics
+# adapted from Royer et al. 2016, Nat Biotech, doi:10.1038/nbt.3708
 # ------------------------------------------------------
 @jit
 def brenner(data):
@@ -112,6 +113,7 @@ def tenengrad(data):
 
 # ------------------------------------------------------
 # Correlative image quality metrics
+# adapted from Royer et al. 2016, Nat Biotech, doi:10.1038/nbt.3708
 # ------------------------------------------------------
 @jit
 def vollath_f4(data):
@@ -167,3 +169,4 @@ def symmetric_vollath_f4(data):
                 np.abs(data[y][x] * (data[y-1][x] - data[y-2][x]))
 
     return np.float32(symmetric_vollath_f4 / n_px_slice)
+
