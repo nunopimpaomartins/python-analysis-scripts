@@ -78,4 +78,6 @@ def main(path, extension):
             output += '\n'
             outfile.write("%s\n" % output)
 
+    outfile.close()
+
 main(folder_path, file_extension)
