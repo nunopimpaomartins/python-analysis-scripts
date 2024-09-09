@@ -9,7 +9,8 @@ import bioio_czi
 from datetime import datetime
 from tqdm import tqdm
 
-folder_path = '/mnt/Data/nuno_martins/Image_data/NPM_Ex003_Re07/'
+# folder_path = '/mnt/Data/nuno_martins/Image_data/NPM_Ex003_Re07/'
+folder_path = '/home/npmartins/data_temp/czi_data/'
 file_extension = '.czi'
 
 def main(path, extension):
@@ -17,7 +18,9 @@ def main(path, extension):
     filelist = [x for x in filelist if x.find(extension) > 0]
 
     number_data = []
-    number_data.append('name, max, min, mean, var, norm_var, kurtosis, brenner, abs_laplacian, sqr_laplacian, tv, block_tv, tenengrad, vollath_f4, vollath_f5, sym_vollath_f4')
+    rist_row = ['name', 'max', 'min', 'mean', 'var', 'norm_var', 'kurtosis', 'brenner', 'abs_laplacian', 'sqr_laplacian', 'tv', 'block_tv', 'tenengrad', 'vollath_f4', 'vollath_f5', 'sym_vollath_f4']
+    number_data.append(rist_row)
+
     for file in tqdm(filelist):
         numbers = []
         print("name: ", file)
@@ -25,7 +28,7 @@ def main(path, extension):
 
         #load image data middle z plane
         data = BioImage(path+file, reader=bioio_czi.Reader)
-        img = data.data[:, 1, (data.dims.Z // 2), ...] # shape: TCZYX
+        img = data.data[:, 1, (data.dims.Z // 2), ...].squeeze() # shape: TCZYX
 
         #start analysis
         numbers.append(np.max(img))
@@ -34,13 +37,13 @@ def main(path, extension):
         numbers.append(np.std(img)**2)
         norm_var = np.var(img)/np.mean(img)**2
         numbers.append(norm_var)
-        numbers.append(kurtosis(img))
+        numbers.append(kurtosis(img, axis=None))
 
 
         #image quality metrics
-        brenners = brenner(img)
-        numbers.append(brenners)
-        
+        brenner_score = brenner(img)
+        numbers.append(brenner_score)
+
         abs_laplacian = absolute_laplacian(img)
         numbers.append(abs_laplacian)
 
@@ -53,14 +56,14 @@ def main(path, extension):
         block_tv = block_total_variation(img)
         numbers.append(block_tv)
 
-        tenengrad = tenengrad(img)
-        numbers.append(tenengrad)
+        tenengrad_score = tenengrad(img)
+        numbers.append(tenengrad_score)
 
-        vollath_f4 = vollath_f4(img) 
-        numbers.append(vollath_f4)
+        vollath_f4_score = vollath_f4(img) 
+        numbers.append(vollath_f4_score)
 
-        vollath_f5 = vollath_f5(img)
-        numbers.append(vollath_f5)
+        vollath_f5_score = vollath_f5(img)
+        numbers.append(vollath_f5_score)
 
         sym_vollath_f4 = symmetric_vollath_f4(img)
         numbers.append(sym_vollath_f4)
@@ -70,13 +73,13 @@ def main(path, extension):
     date = datetime.today().strftime('%Y%m%d_%H%M%S')
     table_name = 'background_metrics'+date+'.csv'
 
-    with open(os.path.join(path, table_name), 'a') as outfile:
+    with open(os.path.join(path, table_name), 'w') as outfile:
         for row in number_data:
             output = ''
             for number in row:
                 output += str(number)+','
             output += '\n'
-            outfile.write("%s\n" % output)
+            outfile.write("%s" % output)
 
     outfile.close()
 
