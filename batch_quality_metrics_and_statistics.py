@@ -22,7 +22,7 @@ def main(path, extension):
 
     for file in tqdm(filelist):
         numbers = []
-        print("name: ", file)
+        # print("name: ", file)
         numbers.append(file)
 
         #load image data middle z plane
