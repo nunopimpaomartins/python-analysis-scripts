@@ -27,7 +27,18 @@ def main(path, extension):
 
         #load image data middle z plane
         data = BioImage(path+file, reader=bioio_czi.Reader)
-        img = data.data[:, 1, (data.dims.Z // 2), ...].squeeze() # shape: TCZYX
+        z = 0
+        if data.dims.Z > 20:
+            z = data.dims.Z // 2
+        else:
+            z = data.dims.Z - 1
+        
+        dim_order = data.dims.order
+        channel_index = dim_order.index("C")
+        if data.shape[channel_index] < 4:
+            continue
+
+        img = data.data[:, 1, z, ...].squeeze() # shape: TCZYX
 
         #start analysis
         numbers.append(np.max(img))
