@@ -28,7 +28,6 @@ def main(path, extension):
         #load image data middle z plane
         data = BioImage(path+file, reader=bioio_czi.Reader)
         img = data.data[:, 1, (data.dims.Z // 2), ...].squeeze() # shape: TCZYX
-        img = normalize_min_max(img)
 
         #start analysis
         numbers.append(np.max(img))
