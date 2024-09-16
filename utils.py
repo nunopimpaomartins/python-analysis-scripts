@@ -20,9 +20,9 @@ def normalize_min_max(data, new_min=0.0, new_max=1.0):
 
 def normalize_standardize(data):
     """
-    Standardize data
-    param data: data to be standardized
-    returns: standardized data
+    Normalize data by standardization
+    param data: data to be normalized
+    returns: normalized data
     """
     data_mean = np.mean(data)
     data_std = np.std(data)
