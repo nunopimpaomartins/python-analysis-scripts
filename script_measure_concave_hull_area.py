@@ -12,7 +12,7 @@ import tifffile
 # ---
 # Setup, define some variables and settings
 # ---
-image_width, image_height = 300, 300
+image_width, image_height = 300, 300 # the number of pixels in X and Y, respectively
 pixel_size = 0.102 # in microns
 
 # ---
