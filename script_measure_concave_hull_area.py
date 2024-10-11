@@ -8,6 +8,7 @@ from tkinter import Tk
 from tkinter.filedialog import askdirectory
 from tqdm import tqdm
 import tifffile
+from pathlib import Path
 
 # ---
 # Setup, define some variables and settings
@@ -40,6 +41,7 @@ def get_bresenham_points(data):
 def main ():    
     Tk().withdraw()
     table_directory_path = askdirectory()
+    table_directory_path = Path(table_directory_path)
     print("Folder path containing tables: ", table_directory_path)
 
     temp_folder_path = os.path.join(table_directory_path, 'temp_images/')
@@ -50,6 +52,9 @@ def main ():
     table_list = [x for x in table_list if x.find('.csv') > 0]
     table_list.sort()
     print('Number of tables in path: ', str(len(table_list)))
+
+    parent_folder = table_directory_path.parent
+    folder_name = table_directory_path.name
 
     data_tosave = [[None, None, None]] * len(table_list)
     counter = 0 # should match the timepoint
@@ -96,7 +101,7 @@ def main ():
 
         counter += 1
     
-    with open(os.path.join(table_directory_path, 'concave_hull_area.csv'), 'w') as outfile:
+    with open(os.path.join(parent_folder, folder_name+'_concave_hull_area.csv'), 'w') as outfile:
         for outline in data_tosave:
             outfile.write(str(outline[0])+','+str(outline[1])+','+str(outline[2])+'\n')
 
