@@ -90,7 +90,7 @@ def main ():
         area = stats[0].area
         area_scaled = area * pixel_size**2
 
-        tifffile.imwrite(os.path.join(temp_folder_path, table_name[:table_name.index('.csv')]), blank_image, dtype='uint8')
+        tifffile.imwrite(os.path.join(temp_folder_path, table_name[:table_name.index('.csv')]+'.tif'), blank_image, dtype='uint8')
 
         data_tosave[counter] = [counter, table_name, area_scaled]
 
